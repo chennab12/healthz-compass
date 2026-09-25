@@ -1,6 +1,6 @@
 # Health Compass
 
-A Streamlit dashboard of curated general adult health education. It offers an overview, eight self-contained topic tabs, routine scenarios and linked sources. Content is static and reviewed as of September 25, 2026; it does not ingest current news or personal medical records.
+A Streamlit dashboard of curated general adult health education. It offers an overview, eight self-contained topic tabs with evidence-linked facts, metrics and FAQs, routine scenarios and linked sources. Content is static and reviewed as of September 25, 2026; it does not ingest current news or personal medical records.
 
 ## Run locally
 

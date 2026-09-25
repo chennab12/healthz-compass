@@ -4,6 +4,7 @@ import io
 from datetime import date
 
 import streamlit as st
+from knowledge import GUIDES
 
 st.set_page_config(page_title="Health Compass", page_icon="🧭", layout="wide")
 
@@ -60,6 +61,15 @@ for tab, t in zip(tabs[1:1+len(TOPICS)], TOPICS):
         for heading,key in [("Why it matters","why"),("Understand","learn"),("Try next","action"),("When to get help","watch")]:
             st.markdown(f"**{heading}:** {t[key]}")
         st.markdown("**Read the original guidance:** " + " · ".join(f"[{s}]({SOURCES[s]})" for s in t["sources"]))
+        guide = GUIDES[t["name"]]
+        st.subheader("Crucial evidence-backed facts")
+        for fact, url in guide["facts"]:
+            st.markdown(f"- {fact} [Source ↗]({url})")
+        st.subheader("Metrics to understand")
+        st.dataframe([{"Metric":name,"Unit / format":unit,"How to use it":meaning} for name,unit,meaning in guide["metrics"]],hide_index=True,use_container_width=True)
+        st.subheader("Common questions")
+        for question, answer in guide["faq"]:
+            with st.expander(question): st.write(answer)
         st.caption("General guidance; thresholds and actions may differ for children, pregnancy, medication use and known illness.")
 
 with tabs[-2]:
@@ -79,6 +89,7 @@ with tabs[-1]:
     st.header("Sources & editorial method")
     st.write("Sources are public health agencies, national medical organizations and academic medical information services. Website popularity and review counts are not measures of medical reliability. Selection favors actionable, widely relevant adult topics with primary guidance.")
     st.write("Guidance is curated rather than live scraped. Check the original page for updates. No article popularity score, automated news feed or personalized risk projection is claimed.")
+    st.write("'Crucial' means editorially selected for relevance and actionability. There is no measured top-1% ranking. WebMD and Wikipedia can help with background reading, but numerical medical guidance here is tied to public health agencies and clinical organizations.")
     st.dataframe([{"Source":name,"URL":url} for name,url in SOURCES.items()],hide_index=True,use_container_width=True, column_config={"URL":st.column_config.LinkColumn("URL")})
     out=io.StringIO(); writer=csv.writer(out); writer.writerow(["area","kpi","why","takeaway","action","caution","source_urls","reviewed_on"])
     for t in TOPICS: writer.writerow([t["name"],t["kpi"],t["why"],t["learn"],t["action"],t["watch"],"; ".join(SOURCES[s] for s in t["sources"]),"2026-09-25"])
