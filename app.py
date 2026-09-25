@@ -5,6 +5,7 @@ from datetime import date
 
 import streamlit as st
 from knowledge import GUIDES
+from dashboard import render_topic_dashboard
 
 st.set_page_config(page_title="Health Compass", page_icon="🧭", layout="wide")
 
@@ -53,6 +54,21 @@ with tabs[0]:
     st.markdown("### The 8 practical areas")
     st.dataframe([{"Area":t["name"],"Key measure":t["kpi"],"First step":t["action"]} for t in TOPICS],hide_index=True,use_container_width=True)
     st.caption("These are editorial priorities for general adult self-care, not a calculated 'top 10%' ranking or a personalized medical score.")
+    st.subheader("Ten essentials worth knowing")
+    essentials = [
+        ("1", "Blood pressure", "Know your repeated reading, not just a single measurement", SOURCES["AHA blood pressure"]),
+        ("2", "Blood sugar", "Understand A1c and fasting glucose", SOURCES["CDC diabetes tests"]),
+        ("3", "Cholesterol", "Know your lipid panel and overall cardiovascular risk", "https://www.heart.org/en/health-topics/cholesterol/about-cholesterol/what-your-cholesterol-levels-mean"),
+        ("4", "Movement", "Work toward 150 minutes and two strength days", SOURCES["CDC activity"]),
+        ("5", "Sleep", "Usually at least seven hours; notice poor quality or apnea symptoms", SOURCES["CDC sleep"]),
+        ("6", "Food pattern", "Build a sustainable pattern rather than chasing a single superfood", SOURCES["AHA Life's Essential 8"]),
+        ("7", "Nicotine", "If you smoke, quitting has major health benefits", "https://www.cdc.gov/tobacco/about/benefits-of-quitting.html"),
+        ("8", "Alcohol", "Less drinking generally means less risk; do not start for health", "https://www.cdc.gov/alcohol/about-alcohol-use/moderate-alcohol-use.html"),
+        ("9", "Prevention", "Review vaccines and relevant screening with a clinician", SOURCES["USPSTF recommendations"]),
+        ("10", "Symptoms & medicines", "Know urgent signs and keep a current medication list", SOURCES["MedlinePlus health topics"]),
+    ]
+    st.dataframe([{"Priority":n,"Area":area,"Remember":takeaway,"Evidence":url} for n,area,takeaway,url in essentials],hide_index=True,use_container_width=True,column_config={"Evidence":st.column_config.LinkColumn("Evidence")})
+    st.caption("This order is a practical editorial shortlist, not a measured percentile or a ranking of benefit for every person.")
 
 for tab, t in zip(tabs[1:1+len(TOPICS)], TOPICS):
     with tab:
@@ -67,6 +83,7 @@ for tab, t in zip(tabs[1:1+len(TOPICS)], TOPICS):
             st.markdown(f"- {fact} [Source ↗]({url})")
         st.subheader("Metrics to understand")
         st.dataframe([{"Metric":name,"Unit / format":unit,"How to use it":meaning} for name,unit,meaning in guide["metrics"]],hide_index=True,use_container_width=True)
+        render_topic_dashboard(t["name"])
         st.subheader("Common questions")
         for question, answer in guide["faq"]:
             with st.expander(question): st.write(answer)
