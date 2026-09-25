@@ -6,6 +6,7 @@ from datetime import date
 import streamlit as st
 from knowledge import GUIDES
 from dashboard import render_topic_dashboard
+from tools import daily_fact, habits, timeline, visit_prep
 
 st.set_page_config(page_title="Health Compass", page_icon="🧭", layout="wide")
 
@@ -42,7 +43,7 @@ st.title("🧭 Health Compass")
 st.caption("Plain-language, evidence-linked health awareness • Curated review: September 25, 2026 • US adult context")
 st.info("Use this to prepare questions and healthy routines. It cannot diagnose, replace a clinician, or predict your personal outcome. For urgent symptoms, seek immediate care.")
 
-tabs = st.tabs(["🏠 Overview"] + [t["icon"] + " " + t["name"] for t in TOPICS] + ["📈 Trends & scenarios", "📚 Sources & method"])
+tabs = st.tabs(["🏠 Overview", "📊 My metrics", "✅ Weekly habits", "📝 Visit prep"] + [t["icon"] + " " + t["name"] for t in TOPICS] + ["📈 Scenarios", "📚 Sources & method"])
 
 with tabs[0]:
     st.subheader("Start with the measures that change decisions")
@@ -69,8 +70,16 @@ with tabs[0]:
     ]
     st.dataframe([{"Priority":n,"Area":area,"Remember":takeaway,"Evidence":url} for n,area,takeaway,url in essentials],hide_index=True,use_container_width=True,column_config={"Evidence":st.column_config.LinkColumn("Evidence")})
     st.caption("This order is a practical editorial shortlist, not a measured percentile or a ranking of benefit for every person.")
+    daily_fact()
 
-for tab, t in zip(tabs[1:1+len(TOPICS)], TOPICS):
+with tabs[1]:
+    timeline()
+with tabs[2]:
+    habits()
+with tabs[3]:
+    visit_prep()
+
+for tab, t in zip(tabs[4:4+len(TOPICS)], TOPICS):
     with tab:
         st.header(t["icon"]+" "+t["name"])
         st.metric("Useful KPI",t["kpi"])
